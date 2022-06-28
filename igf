@@ -5,60 +5,42 @@ import random
 import os.path
 from  PIL import Image, ImageDraw, ImageFont
 
+bot = telebot.TeleBot('Token')
 
-fnt = ImageFont.truetype('/home/user/font.ttf',size = 50)
+path = 'memes path'
 
+def image_counter():
+    num_files = len([f for f in os.listdir(path)
+                     if os.path.isfile(os.path.join(path, f))])
+    return(num_files)
 
-bot = telebot.TeleBot('TOKEN')
+def strip_draw(im):
+    strip = ImageDraw.Draw(im)
+    strip.rectangle((0,0,im.width,int(im.height/15)), fill = 'black')
+    return im
 
-path = '/home/user/Загрузки/Мемы'
-num_files = len([f for f in os.listdir(path)
-                if os.path.isfile(os.path.join(path, f))])
-
-
-@bot.message_handler(commands=["start"])
-def start(m, res=False):
-        markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1=types.KeyboardButton("Мем")
-        item2=types.KeyboardButton("Тоже мем")
-        markup.add(item1)
-        markup.add(item2)
-        bot.send_message(m.chat.id, 'Нажми: \nМем чтобы получить мем\nЕще мем — для другого мема ',  reply_markup=markup)
+def text_draw(im,txt):
+    fnt = ImageFont.truetype('/home/user/Загрузки/mem_font.ttf',size = int(im.height/20))
+    draw = ImageDraw.Draw(strip_draw(im))
+    draw.text((int(im.width/10),int(im.height/3000)),txt,font = fnt)
+    return im
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
-    elif message.text == 'Мем' or message.text == 'Тоже мем':
-        rnd = random.randint(1,num_files)
-        mem = Image.open('/home/user/Mems/'+str(rnd)+'.jpg')
-        mem.load()
-        draw = ImageDraw.Draw(mem)
-        draw.text((40,100),'Вот ваш мем',font = fnt)
-        print(draw.size)
-        bot.send_photo(message.from_user.id, mem)
-    else:
-        rnd = random.randint(1,num_files)
-        mem = Image.open('/home/user/Загрузки/Мемы/'+str(rnd)+'.jpg')
-        mem.load()
-        cnt = int(mem.width/15)
-        cnt1 = int(mem.height/10)
-        fnt = ImageFont.truetype('/home/user/font.ttf',size = int(cnt1/2))
-        strip = ImageDraw.Draw(mem)
-        strip.rectangle((0,0,mem.width,cnt1), fill = 'black')
-        draw = ImageDraw.Draw(mem)
-        draw.text((cnt,int(cnt1/200)),message.text,font = fnt)
-        bot.send_photo(message.from_user.id, mem)
+    rnd = random.randint(1,image_counter())
+    mem = Image.open('memes path'+str(rnd)+'.jpg')
+    bot.send_photo(message.from_user.id, text_draw(mem, message.text))
+    print(message.from_user.id)
+    print(message.text)
     
 @bot.message_handler(content_types=['photo'])
 def photo(message):
-    global num_files
-    num_files = len([f for f in os.listdir(path)
-                if os.path.isfile(os.path.join(path, f))])
     fileID = message.photo[-1].file_id
     file_info = bot.get_file(fileID)
     print(file_info)
     downloaded_file = bot.download_file(file_info.file_path)
-    with open(path+'/'+str(num_files)+".jpg", 'wb') as new_file:
+    with open(path+'/'+str(image_counter())+".jpg", 'wb') as new_file:
         new_file.write(downloaded_file)
-    bot.send_message(message.from_user.id, 'я запомнил')
+    bot.send_message(message.from_user.id, 'я запомнил и теперь помню '+str(image_counter())+' фоток ' )
 
 bot.polling(none_stop=True, interval=0)
