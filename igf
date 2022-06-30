@@ -5,13 +5,11 @@ import random
 import os.path
 from  PIL import Image, ImageDraw, ImageFont
 
-bot = telebot.TeleBot('Token')
+bot = telebot.TeleBot('1262975194:AAE4dOImvRwFx-5ho4HLCdUinubYQuKdi3A')
 
-path = 'memes path'
-
-def image_counter():
-    num_files = len([f for f in os.listdir(path)
-                     if os.path.isfile(os.path.join(path, f))])
+def image_counter(user_id):
+    num_files = len([f for f in os.listdir(str(user_id))
+                     if os.path.isfile(os.path.join(str(user_id), f))])
     return(num_files)
 
 def strip_draw(im):
@@ -27,20 +25,24 @@ def text_draw(im,txt):
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
-    rnd = random.randint(1,image_counter())
-    mem = Image.open('memes path'+str(rnd)+'.jpg')
+    mem = Image.open('/home/user/eclipse-workspace/Alarming/igf/1095546637/'+str(image_counter(message.from_user.id)-1)+'.jpg')
     bot.send_photo(message.from_user.id, text_draw(mem, message.text))
-    print(message.from_user.id)
-    print(message.text)
     
 @bot.message_handler(content_types=['photo'])
 def photo(message):
-    fileID = message.photo[-1].file_id
-    file_info = bot.get_file(fileID)
-    print(file_info)
-    downloaded_file = bot.download_file(file_info.file_path)
-    with open(path+'/'+str(image_counter())+".jpg", 'wb') as new_file:
-        new_file.write(downloaded_file)
-    bot.send_message(message.from_user.id, 'я запомнил и теперь помню '+str(image_counter())+' фоток ' )
+    if os.path.exists(str(message.from_user.id)):
+        fileID = message.photo[-1].file_id
+        file_info = bot.get_file(fileID) 
+        downloaded_file = bot.download_file(file_info.file_path)
+        with open(str(message.from_user.id)+'/'+str(image_counter(message.from_user.id))+".jpg", 'wb') as new_file:
+            new_file.write(downloaded_file)
+    else:
+        os.mkdir(str(message.from_user.id))
+        fileID = message.photo[-1].file_id
+        file_info = bot.get_file(fileID) 
+        downloaded_file = bot.download_file(file_info.file_path)
+        with open(str(message.from_user.id)+'/'+str(image_counter(message.from_user.id)-1)+".jpg", 'wb') as new_file:
+            new_file.write(downloaded_file)
+            
 
 bot.polling(none_stop=True, interval=0)
