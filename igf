@@ -5,7 +5,7 @@ import random
 import os.path
 from  PIL import Image, ImageDraw, ImageFont
 
-bot = telebot.TeleBot('1262975194:AAE4dOImvRwFx-5ho4HLCdUinubYQuKdi3A')
+bot = telebot.TeleBot('TOKEN')
 
 def image_counter(user_id):
     num_files = len([f for f in os.listdir(str(user_id))
@@ -18,14 +18,14 @@ def strip_draw(im):
     return im
 
 def text_draw(im,txt):
-    fnt = ImageFont.truetype('/home/user/Загрузки/mem_font.ttf',size = int(im.height/20))
+    fnt = ImageFont.truetype('font_address',size = int(im.height/20))
     draw = ImageDraw.Draw(strip_draw(im))
     draw.text((int(im.width/10),int(im.height/3000)),txt,font = fnt)
     return im
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
-    mem = Image.open('/home/user/eclipse-workspace/Alarming/igf/1095546637/'+str(image_counter(message.from_user.id)-1)+'.jpg')
+    mem = Image.open('users_foler_address'+str(image_counter(message.from_user.id)-1)+'.jpg')
     bot.send_photo(message.from_user.id, text_draw(mem, message.text))
     
 @bot.message_handler(content_types=['photo'])
