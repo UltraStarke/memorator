@@ -25,7 +25,8 @@ def text_draw(im,txt):
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
-    mem = Image.open('users_foler_address'+str(image_counter(message.from_user.id)-1)+'.jpg')
+    path = str(os.getcwd())+'/'+str(message.from_user.id)+'/'
+    mem = Image.open(path+str(image_counter(message.from_user.id)-1)+'.jpg')
     bot.send_photo(message.from_user.id, text_draw(mem, message.text))
     
 @bot.message_handler(content_types=['photo'])
