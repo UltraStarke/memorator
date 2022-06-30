@@ -7,17 +7,23 @@ from  PIL import Image, ImageDraw, ImageFont
 
 bot = telebot.TeleBot('TOKEN')
 
-def image_counter(user_id):
+def file_save(file_id, user_id): #save users image into the users folder
+    file_info = bot.get_file(file_id) 
+    downloaded_file = bot.download_file(file_info.file_path)
+    with open(str(user_id)+'/'+str(image_counter(user_id))+".jpg", 'wb') as new_file:
+        new_file.write(downloaded_file)
+
+def image_counter(user_id):#count how many files contains users folder
     num_files = len([f for f in os.listdir(str(user_id))
                      if os.path.isfile(os.path.join(str(user_id), f))])
     return(num_files)
 
-def strip_draw(im):
+def strip_draw(im):#draw a black strip  the size 1/15 of the image size 
     strip = ImageDraw.Draw(im)
     strip.rectangle((0,0,im.width,int(im.height/15)), fill = 'black')
     return im
 
-def text_draw(im,txt):
+def text_draw(im,txt):#write text in the black strip
     fnt = ImageFont.truetype('font_address',size = int(im.height/20))
     draw = ImageDraw.Draw(strip_draw(im))
     draw.text((int(im.width/10),int(im.height/3000)),txt,font = fnt)
@@ -31,19 +37,13 @@ def get_text_messages(message):
     
 @bot.message_handler(content_types=['photo'])
 def photo(message):
-    if os.path.exists(str(message.from_user.id)):
-        fileID = message.photo[-1].file_id
-        file_info = bot.get_file(fileID) 
-        downloaded_file = bot.download_file(file_info.file_path)
-        with open(str(message.from_user.id)+'/'+str(image_counter(message.from_user.id))+".jpg", 'wb') as new_file:
-            new_file.write(downloaded_file)
+   if os.path.exists(str(message.from_user.id)): #check if the user has a folder, and if not create one  
+        file_save(message.photo[-1].file_id,message.from_user.id)
     else:
         os.mkdir(str(message.from_user.id))
-        fileID = message.photo[-1].file_id
-        file_info = bot.get_file(fileID) 
-        downloaded_file = bot.download_file(file_info.file_path)
-        with open(str(message.from_user.id)+'/'+str(image_counter(message.from_user.id)-1)+".jpg", 'wb') as new_file:
-            new_file.write(downloaded_file)
+        file_save(message.photo[-1].file_id,message.from_user.id)
+        
+    bot.send_message(message.from_user.id,'enter the text you want to add to the image')
             
 
 bot.polling(none_stop=True, interval=0)
