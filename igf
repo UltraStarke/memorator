@@ -18,15 +18,21 @@ def image_counter(user_id):#count how many files contains users folder
                      if os.path.isfile(os.path.join(str(user_id), f))])
     return(num_files)
 
-def strip_draw(im):#draw a black strip  the size 1/15 of the image size 
-    strip = ImageDraw.Draw(im)
-    strip.rectangle((0,0,im.width,int(im.height/15)), fill = 'black')
-    return im
 
-def text_draw(im,txt):#write text in the black strip
-    fnt = ImageFont.truetype('font_address',size = int(im.height/20))
-    draw = ImageDraw.Draw(strip_draw(im))
-    draw.text((int(im.width/10),int(im.height/3000)),txt,font = fnt)
+def text_draw(im,txt):#write text
+    fnt_size = int(im.width/(len(txt)*0.7))
+    if fnt_size > im.height*0.15:
+        fnt_size = int(im.height*0.15)
+    x = int(im.width/10)
+    y = int(im.height-im.height*0.15)
+    strk = int(fnt_size*0.01)#some manipulation to receive text stroke
+    fnt = ImageFont.truetype('mem_font.ttf',size = fnt_size)
+    draw = ImageDraw.Draw(im)
+    draw.text((x+strk,y-strk),txt,font = fnt, fill = (0,0,0))
+    draw.text((x+strk,y+strk),txt,font = fnt, fill = (0,0,0))
+    draw.text((x-strk,y+strk),txt,font = fnt, fill = (0,0,0))
+    draw.text((x-strk,y-strk),txt,font = fnt, fill = (0,0,0))
+    draw.text((x,y),txt,font = fnt, fill = (255,255,255))
     return im
 
 @bot.message_handler(content_types=['text'])
