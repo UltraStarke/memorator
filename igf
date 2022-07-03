@@ -20,9 +20,28 @@ def image_counter(user_id):#count how many files contains users folder
 
 
 def text_draw(im,txt):#write text
-    fnt_size = int(im.width/(len(txt)*0.7))
+    fnt_size = int(im.width/(len(txt)*0.7))#calculate font size
     if fnt_size > im.height*0.15:
         fnt_size = int(im.height*0.15)
+    elif fnt_size < im.height*0.03:
+        fnt_size = int(im.height*0.03)
+    if len(txt)*fnt_size*0.6 > im.width:
+        check = False
+        head_txt = ''
+        tail_txt = ''
+        while check == False:
+            slice_txt = txt.rfind(' ')
+            head_txt = txt[0:slice_txt]
+            print(head_txt,'\n')
+            tail_txt = txt[(slice_txt):len(txt)]+tail_txt
+            print(tail_txt,'\n')
+            if len(head_txt)*fnt_size*0.6 < im.width:
+                check = True
+                txt = head_txt+'\n'+tail_txt
+                print(txt,'\n')
+            else:
+                txt = head_txt
+                
     x = int(im.width/10)
     y = int(im.height-im.height*0.15)
     strk = int(fnt_size*0.01)#some manipulation to receive text stroke
