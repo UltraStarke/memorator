@@ -18,6 +18,14 @@ def image_counter(user_id):#count how many files contains users folder
                      if os.path.isfile(os.path.join(str(user_id), f))])
     return(num_files)
 
+def frame_draw(im,txt):
+    hgt = int(im.height)
+    wdt = int(im.width*0.9)
+    frame = Image.new('RGBA', (wdt, hgt), 'black')
+    im.thumbnail((im.height,im.width))
+    indent = int((frame.width-im.width)/2)
+    frame.paste(im,(indent,indent))
+    return text_draw(frame, txt)
 
 def text_draw(im,txt):#write text
     fnt_size = int(im.width/(len(txt)*0.7))#calculate font size
