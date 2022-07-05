@@ -18,7 +18,7 @@ def image_counter(user_id):#count how many files contains users folder
                      if os.path.isfile(os.path.join(str(user_id), f))])
     return(num_files)
 
-def frame_draw(im,txt):
+def frame_draw(im,txt):#draw the black frame around the image
     hgt = int(im.height)
     wdt = int(im.width*0.9)
     frame = Image.new('RGBA', (wdt, hgt), 'black')
