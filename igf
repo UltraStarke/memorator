@@ -27,7 +27,7 @@ def frame_draw(im,txt):#draw the black frame around the image
     frame.paste(im,(indent,indent))
     return text_draw(frame, txt)
 
-def text_draw(im,txt):#write text
+def text_draw(im,txt):#write text on some image
     fnt_size = int(im.width/(len(txt)*0.7))#calculate font size
     if fnt_size > im.height*0.15:
         fnt_size = int(im.height*0.15)
