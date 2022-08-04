@@ -22,9 +22,16 @@ def frame_draw(im,txt):#draw the black frame around the image
     hgt = int(im.height)
     wdt = int(im.width*0.9)
     frame = Image.new('RGBA', (wdt, hgt), 'black')
+    hgt = int(im.height*1.01)
+    wdt = int(im.width*1.01)
+    white_frame = Image.new('RGBA', (wdt, hgt), 'white')
+    white_frame.thumbnail((white_frame.height, white_frame.width))
     im.thumbnail((im.height,im.width))
-    indent = int((frame.width-im.width)/2)
-    frame.paste(im,(indent,indent))
+    i_h = int((white_frame.height-im.height)/2)
+    i_w = int((white_frame.width-im.width)/2)
+    white_frame.paste(im,(i_h,i_w))
+    indent = int((frame.width-white_frame.width)/2)
+    frame.paste(white_frame,(indent,indent))
     return text_draw(frame, txt)
 
 def text_draw(im,txt):#write text on some image
