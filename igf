@@ -9,7 +9,7 @@ from distutils.command.check import check
 from pyatspi.state import stateset_init, StateSet, StateSet_getStates
 from itertools import count
 
-bot = telebot.TeleBot('1262975194:AAE4dOImvRwFx-5ho4HLCdUinubYQuKdi3A')
+bot = telebot.TeleBot('token')
 states = []
 
 
