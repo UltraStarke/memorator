@@ -20,19 +20,18 @@ def file_save(file_id, user_id): #save users image into the users folder
         new_file.write(downloaded_file)
         
 def frame_draw(im,txt):
-    hgt = int(im.height)
-    wdt = int(im.width*0.9)
-    frame = Image.new('RGBA', (wdt, hgt), 'black')
-    hgt = int(im.height*1.01)
-    wdt = int(im.width*1.01)
-    white_frame = Image.new('RGBA', (wdt, hgt), 'white')
-    white_frame.thumbnail((white_frame.height, white_frame.width))
-    im.thumbnail((im.height,im.width))
-    i_h = int((white_frame.height-im.height)/2)
-    i_w = int((white_frame.width-im.width)/2)
-    white_frame.paste(im,(i_h,i_w))
-    indent = int((frame.width-white_frame.width)/2)
-    frame.paste(white_frame,(indent,indent))
+    frame_wdt = int(im.width*1.2)
+    frame_hgt = int((frame_wdt-im.width)*1.5)+im.height
+    frame = Image.new('RGBA', (frame_wdt, frame_hgt), 'black')
+    stroke_hgt = int(im.height*1.02)
+    stroke_wdt = int(im.width*1.02)
+    white_frame = Image.new('RGBA', (stroke_wdt, stroke_hgt), 'white')
+    x = int((white_frame.width-im.width)/2)
+    y = int((white_frame.height-im.height)/2)
+    white_frame.paste(im,(x,y))
+    x = int((frame.width-white_frame.width)/2)
+    y = int((frame.height-white_frame.height)/3)
+    frame.paste(white_frame,(x,x))
     return text_draw(frame, txt)
 
 def check_states(user_id):
