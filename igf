@@ -5,9 +5,6 @@ import random
 import os.path
 import sqlite3
 from  PIL import Image, ImageDraw, ImageFont
-from distutils.command.check import check
-from pyatspi.state import stateset_init, StateSet, StateSet_getStates
-from itertools import count
 
 bot = telebot.TeleBot('token')
 states = []
