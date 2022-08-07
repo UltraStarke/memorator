@@ -104,15 +104,11 @@ def get_text_messages(message):
         if os.path.exists(str(message.from_user.id)):
             path = str(os.getcwd())+'/'+str(message.from_user.id)+'/'
             mem = Image.open(path+str(image_counter(message.from_user.id)-1)+'.jpg')
-            #bot.send_photo(message.from_user.id, text_draw(mem,message.text),reply_markup=keyboard)
-            print(check_states(message.from_user.id))
             if check_states(message.from_user.id):
                 if states[find_states(message.from_user.id)][1] == 'sign':
                     bot.send_photo(message.from_user.id, text_draw(mem,message.text),reply_markup=keyboard)
-                    print(states)
                 else:
                     bot.send_photo(message.from_user.id, frame_draw(mem,message.text),reply_markup=keyboard)
-                    print(states)
             else:
                 states.append([str(message.from_user.id),'sign','white','black'])
                 bot.send_photo(message.from_user.id, text_draw(mem,message.text),reply_markup=keyboard)
@@ -124,17 +120,12 @@ def demo_choose(callback_query: types.CallbackQuery):
     bot.send_message(callback_query.from_user.id, 'You choose demotivator')
     global states 
     states[find_states(callback_query.from_user.id)][1] = 'demo'
-    print(states)
-    print(find_states(callback_query.from_user.id))
     
 @bot.callback_query_handler(func=lambda call: call.data == 'sign')
 def sign_choose(callback_query: types.CallbackQuery):
     bot.send_message(callback_query.from_user.id, 'You choose sign')
     global states 
     states[find_states(callback_query.from_user.id)][1] = 'sign'
-    print(states)
-    print(find_states(callback_query.from_user.id))
-   
  
 @bot.message_handler(content_types=['photo'])
 def photo(message):
@@ -142,7 +133,6 @@ def photo(message):
         file_save(message.photo[-1].file_id,message.from_user.id)
         global states
         states.append([str(message.from_user.id),'sign','white','black'])
-        print(states)
     else:
         os.mkdir(str(message.from_user.id))
         file_save(message.photo[-1].file_id,message.from_user.id)
