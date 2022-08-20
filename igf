@@ -52,39 +52,56 @@ def image_counter(user_id):#count how many files contains users folder
                      if os.path.isfile(os.path.join(str(user_id), f))])
     return(num_files)
 
-def text_draw(im,txt):#write the text 
-    fnt_size = int(im.width/(len(txt)*0.7))#calculate font size
-    if fnt_size > im.height*0.15:
-        fnt_size = int(im.height*0.15)
-    elif fnt_size < im.height*0.03:
-        fnt_size = int(im.height*0.03)
-    if len(txt)*fnt_size*0.6 > im.width:
-        check = False
-        head_txt = ''
-        tail_txt = ''
-        while check == False:
-            slice_txt = txt.rfind(' ')
-            head_txt = txt[0:slice_txt]
-            print(head_txt,'\n')
-            tail_txt = txt[(slice_txt):len(txt)]+tail_txt
-            print(tail_txt,'\n')
-            if len(head_txt)*fnt_size*0.6 < im.width:
-                check = True
-                txt = head_txt+'\n'+tail_txt
-                print(txt,'\n')
-            else:
-                txt = head_txt
-                
-    x = int(im.width/10)
-    y = int(im.height-im.height*0.15)
-    strk = int(fnt_size*0.02)#some manipulation to receive text stroke 
-    fnt = ImageFont.truetype('mem_font.ttf',size = fnt_size)
-    draw = ImageDraw.Draw(im)
-    draw.text((x+strk,y-strk),txt,font = fnt, fill = (0,0,0))
-    draw.text((x+strk,y+strk),txt,font = fnt, fill = (0,0,0))
-    draw.text((x-strk,y+strk),txt,font = fnt, fill = (0,0,0))
-    draw.text((x-strk,y-strk),txt,font = fnt, fill = (0,0,0))
-    draw.text((x,y),txt,font = fnt, fill = (255,255,255))
+def text_draw(im,txt, dif_y = 0, dif_x = 0):#write the text 
+    if dif_y != 0:
+        fnt_size = int((im.height - dif_y)/3) 
+        x = int((im.width-(len(txt))*fnt_size*0.5)/2)
+        if int(len(txt)*fnt_size*0.5) >= (im.width - dif_x*2):
+            first_line = txt
+            second_line = ''
+            while int(len(first_line)*fnt_size*0.5) >= (im.width - dif_x*2):
+                space_index = first_line.rfind(' ')
+                second_line = first_line[(space_index):len(first_line)]+second_line
+                first_line = first_line[0:space_index]
+                print(first_line+'||'+second_line)
+            print(first_line+'||'+second_line)
+            
+            y = int(im.height - fnt_size*2.5)
+            x1 = int((im.width-(len(first_line))*fnt_size*0.5)/2)
+            x2 = int((im.width-(len(second_line))*fnt_size*0.5)/2)
+            y1 = int(im.height - fnt_size*3)
+            y2 = int(im.height - fnt_size*1.5)
+            
+            strk = int(fnt_size*0.02)#some manipulation to receive text stroke 
+            fnt = ImageFont.truetype('mem_font.ttf',size = fnt_size)
+            draw = ImageDraw.Draw(im)
+            
+            draw.text((x1+strk,y1-strk),first_line,font = fnt, fill = (0,0,0))
+            draw.text((x1+strk,y1+strk),first_line,font = fnt, fill = (0,0,0))
+            draw.text((x1-strk,y1+strk),first_line,font = fnt, fill = (0,0,0))
+            draw.text((x1-strk,y1-strk),first_line,font = fnt, fill = (0,0,0))
+            draw.text((x1,y1),first_line,font = fnt, fill = (255,255,255))
+            
+            draw = ImageDraw.Draw(im)
+            
+            draw.text((x2+strk,y2-strk),second_line,font = fnt, fill = (0,0,0))
+            draw.text((x2+strk,y2+strk),second_line,font = fnt, fill = (0,0,0))
+            draw.text((x2-strk,y2+strk),second_line,font = fnt, fill = (0,0,0))
+            draw.text((x2-strk,y2-strk),second_line,font = fnt, fill = (0,0,0))
+            draw.text((x2,y2),second_line,font = fnt, fill = (255,255,255))
+        else:
+            
+            y = int(im.height - fnt_size*2.5)
+            
+            strk = int(fnt_size*0.02)#some manipulation to receive text stroke 
+            fnt = ImageFont.truetype('mem_font.ttf',size = fnt_size)
+            draw = ImageDraw.Draw(im)
+            
+            draw.text((x+strk,y-strk),txt,font = fnt, fill = (0,0,0))
+            draw.text((x+strk,y+strk),txt,font = fnt, fill = (0,0,0))
+            draw.text((x-strk,y+strk),txt,font = fnt, fill = (0,0,0))
+            draw.text((x-strk,y-strk),txt,font = fnt, fill = (0,0,0))
+            draw.text((x,y),txt,font = fnt, fill = (255,255,255))
     return im
 
 @bot.message_handler(content_types=['text'])
